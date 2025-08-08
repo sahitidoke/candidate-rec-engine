@@ -62,8 +62,8 @@ class Resume:
             token.lemma_.lower() for token in doc
             if token.is_alpha and not token.is_stop and token.pos_ in ['NOUN', 'PROPN']
         ])
-    def generate_summary(text):
-        inputs = tokenizer.encode("summarize: " + text, return_tensors="pt", max_length=1024, truncation=True)
+    def generate_summary():
+        inputs = tokenizer.encode("summarize: " + self.filtered_text, return_tensors="pt", max_length=1024, truncation=True)
         summary_ids = model.generate(inputs, max_length=150, min_length=50, length_penalty=2.0, num_beams=4, early_stopping=True)
         summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
         return summary
@@ -161,7 +161,7 @@ if job_desc and len(resumes) == num_resumes:
     for i, (res, score) in enumerate(top_resumes, 1):
      
         if res.summary is None:
-            res.summary = res.generate_summary(self)
+            res.summary = res.generate_summary()
 
             
         st.markdown(f"### {i}. {res.name}")
