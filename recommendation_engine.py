@@ -11,8 +11,7 @@ from transformers import BartTokenizer, BartForConditionalGeneration
 
 nlp = spacy.load("en_core_web_sm")
 matcher = Matcher(nlp.vocab)
-tokenizer = BartTokenizer.from_pretrained('facebook/bart-large-cnn')
-model = BartForConditionalGeneration.from_pretrained('facebook/bart-large-cnn')
+
     
 class Resume:
     def __init__(self, text):
@@ -63,6 +62,8 @@ class Resume:
             if token.is_alpha and not token.is_stop and token.pos_ in ['NOUN', 'PROPN']
         ])
     def generate_summary(self):
+        tokenizer = BartTokenizer.from_pretrained('facebook/bart-large-cnn')
+        model = BartForConditionalGeneration.from_pretrained('facebook/bart-large-cnn')
         inputs = tokenizer.encode("summarize: " + self.filtered_text, return_tensors="pt", max_length=1024, truncation=True)
         summary_ids = model.generate(inputs, max_length=150, min_length=50, length_penalty=2.0, num_beams=4, early_stopping=True)
         self.summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
