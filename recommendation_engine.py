@@ -6,15 +6,13 @@ import re
 import torch
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
-from transformers import AutoTokenizer, BartForConditionalGeneration
-
+from transformers import BartTokenizer, BartForConditionalGeneration
 
 
 nlp = spacy.load("en_core_web_sm")
 matcher = Matcher(nlp.vocab)
-
-
-
+tokenizer = BartTokenizer.from_pretrained('facebook/bart-large-cnn')
+model = BartForConditionalGeneration.from_pretrained('facebook/bart-large-cnn')
     
 class Resume:
     def __init__(self, text):
@@ -64,8 +62,11 @@ class Resume:
             token.lemma_.lower() for token in doc
             if token.is_alpha and not token.is_stop and token.pos_ in ['NOUN', 'PROPN']
         ])
-
-  
+    def generate_summary(text):
+        inputs = tokenizer.encode("summarize: " + text, return_tensors="pt", max_length=1024, truncation=True)
+        summary_ids = model.generate(inputs, max_length=150, min_length=50, length_penalty=2.0, num_beams=4, early_stopping=True)
+        summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+        return summary
 
 class ResumeMatcher:
     def __init__(self, job_description):
@@ -159,12 +160,16 @@ if job_desc and len(resumes) == num_resumes:
 
     for i, (res, score) in enumerate(top_resumes, 1):
      
+         if res.summary is None:
+            res.summary = res.generate_summary()
 
+            
         st.markdown(f"### {i}. {res.name}")
         st.write(f"**similarity score:** {round(score * 100, 2)}%")
         st.write(f"**email(s):** {', '.join(res.email)}")
         st.write(f"**phone(s):** {', '.join(res.phones)}")
         st.markdown("**AI summary of their fit**")
+        st.write(res.summary)
         st.markdown("---")
 
 elif job_desc and len(resumes) != num_resumes:
