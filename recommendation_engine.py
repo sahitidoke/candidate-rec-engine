@@ -6,7 +6,7 @@ import re
 import torch
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
-from transformers import BartTokenizer, BartForConditionalGeneration
+from transformers import AutoTokenizer, BartForConditionalGeneration
 
 
 
@@ -14,15 +14,14 @@ nlp = spacy.load("en_core_web_sm")
 matcher = Matcher(nlp.vocab)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-tokenizer = BartTokenizer.from_pretrained("facebook/bart-large-cnn")
+tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn")
 model = BartForConditionalGeneration.from_pretrained(
     "facebook/bart-large-cnn",
     torch_dtype=torch.float32,   # Force float32 so it works everywhere
     low_cpu_mem_usage=True       # Helps avoid meta tensor state
-).to(device)
+)
 
-if device.type == "cuda":
-    model = model.to(device)
+
     
 class Resume:
     def __init__(self, text):
