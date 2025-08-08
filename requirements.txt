@@ -1,5 +1,4 @@
 spacy
-spacy.cli
 streamlit
 pdfplumber
 torch
