@@ -160,7 +160,7 @@ if job_desc and len(resumes) == num_resumes:
 
     for i, (res, score) in enumerate(top_resumes, 1):
      
-         if res.summary is None:
+        if res.summary is None:
             res.summary = res.generate_summary()
 
             
