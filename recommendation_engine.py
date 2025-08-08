@@ -7,6 +7,7 @@ import torch
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 from transformers import BartTokenizer, BartForConditionalGeneration
+from transformers import BartForMaskedLM
 
 
 
@@ -14,6 +15,16 @@ from transformers import BartTokenizer, BartForConditionalGeneration
 nlp = spacy.load("en_core_web_sm")
 matcher = Matcher(nlp.vocab)
 
+def assign_GPU(Tokenizer_output):
+        tokens_tensor = Tokenizer_output['input_ids'].to('cuda:0')
+        token_type_ids = Tokenizer_output['token_type_ids'].to('cuda:0')
+        attention_mask = Tokenizer_output['attention_mask'].to('cuda:0')
+
+        output = {'input_ids' : tokens_tensor, 
+                'token_type_ids' : token_type_ids, 
+                'attention_mask' : attention_mask}
+
+        return output
     
 class Resume:
     def __init__(self, text):
@@ -63,11 +74,12 @@ class Resume:
             token.lemma_.lower() for token in doc
             if token.is_alpha and not token.is_stop and token.pos_ in ['NOUN', 'PROPN']
         ])
+    
     def generate_summary(self):
         tokenizer = BartTokenizer.from_pretrained("facebook/bart-large-cnn")
         model = BartForConditionalGeneration.from_pretrained("facebook/bart-large-cnn")
     
-        inputs = tokenizer(self.filtered_text, max_length=1024, return_tensors="pt", truncation=True)
+        inputs = assign_GPU(tokenizer(self.filtered_text, max_length=1024, return_tensors="pt", truncation=True))
         summary_ids = model.generate(inputs["input_ids"], max_length=130, min_length=30, length_penalty=2.0, num_beams=4, early_stopping=True)
         self.summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
         return self.summary
