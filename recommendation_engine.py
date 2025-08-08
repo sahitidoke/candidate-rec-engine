@@ -7,9 +7,9 @@ import torch
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 from transformers import BartTokenizer, BartForConditionalGeneration
-import spacy.cli
 
-spacy.cli.download("en_core_web_sm")
+
+
 nlp = spacy.load("en_core_web_sm")
 matcher = Matcher(nlp.vocab)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -100,6 +100,27 @@ class ResumeMatcher:
         vectorizer = CountVectorizer().fit_transform(texts)
         vectors = vectorizer.toarray()
         return cosine_similarity([vectors[0]], [vectors[1]])[0][0]
+        
+''' here is my logic for cosine similarity!
+def cosine_sim(v1, v2):
+    inter = set(v1.keys()) & set(v2.keys())
+    num = sum([v1[x] * v2[x] for x in inter])
+
+    sum1 = sum([v1[x]**2 for x in v1.keys()])
+    sum2 = sum([v2[x]**2 for x in v2.keys()])
+    den = math.sqrt(sum1) * math.sqrt(sum2)
+
+    if not den:
+        return 0.0
+    else:
+        return float(num) / den
+
+
+def vectorization(text):
+    word = re.compile(r'\w+')
+    words = word.findall(text)
+    return Counter(words)
+'''
 
     def get_top_resumes(self, top_n=5):
         sorted_resumes = sorted(self.resumes, key=lambda x: x[1], reverse=True)
