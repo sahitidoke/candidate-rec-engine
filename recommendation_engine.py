@@ -16,8 +16,6 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 tokenizer = BartTokenizer.from_pretrained('facebook/bart-large-cnn')
 model = BartForConditionalGeneration.from_pretrained(
     "facebook/bart-large-cnn",
-    low_cpu_mem_usage=True,
-    device_map="auto" 
 )
 
 class Resume:
