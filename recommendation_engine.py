@@ -7,7 +7,7 @@ import torch
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 from transformers import BartTokenizer, BartForConditionalGeneration
-from transformers import BartForMaskedLM
+
 
 
 
