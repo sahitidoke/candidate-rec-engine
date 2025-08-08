@@ -1,6 +1,5 @@
 spacy
 streamlit
-en_core_web_sm
 pdfplumber
 torch
 scikit-learn
