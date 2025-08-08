@@ -1,9 +1,11 @@
 streamlit>=1.18.0
+sentencepiece
 spacy>=3.0.0,<4.0.0
 https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.5.0/en_core_web_sm-3.5.0-py3-none-any.whl
 pdfplumber
 numpy==1.26.4
 torch
 scikit-learn
+protobuf==3.20.3
 transformers 
 
