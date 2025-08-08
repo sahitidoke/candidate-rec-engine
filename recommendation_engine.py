@@ -81,6 +81,7 @@ class Resume:
             max_length=1024,
             truncation=True
         ).to(device)
+        
         summary_ids = model.generate(
             inputs,
             max_length=500,
