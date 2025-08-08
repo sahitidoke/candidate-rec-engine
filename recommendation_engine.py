@@ -64,7 +64,7 @@ class Resume:
             if token.is_alpha and not token.is_stop and token.pos_ in ['NOUN', 'PROPN']
         ])
     def generate_summary(self):
-        self.summary = summarizer(self.filtered_text, max_length=130, min_length=30))
+        self.summary = summarizer(self.filtered_text, max_length=130, min_length=30)
         return self.summary
 
 class ResumeMatcher:
