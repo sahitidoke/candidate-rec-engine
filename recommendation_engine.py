@@ -74,13 +74,12 @@ class Resume:
             truncation=True
         ).to(device)
 
-        summary_ids = model.generate(
-            inputs,
-            max_length=500,
-            min_length=60,
-            length_penalty=2.0,
-            num_beams=4,
-            early_stopping=True
+       summary_ids = model.generate(
+        input_ids=input_ids,
+        attention_mask=attention_mask,
+        max_length=500,
+        min_length=60,
+        do_sample=False 
         )
 
         return tokenizer.decode(summary_ids[0], skip_special_tokens=True)
