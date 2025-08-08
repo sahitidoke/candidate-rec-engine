@@ -12,14 +12,7 @@ from transformers import AutoTokenizer, BartForConditionalGeneration
 
 nlp = spacy.load("en_core_web_sm")
 matcher = Matcher(nlp.vocab)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn")
-model = BartForConditionalGeneration.from_pretrained(
-    "facebook/bart-large-cnn",
-    torch_dtype=torch.float32,   # Force float32 so it works everywhere
-    low_cpu_mem_usage=True       # Helps avoid meta tensor state
-)
 
 
     
@@ -72,24 +65,7 @@ class Resume:
             if token.is_alpha and not token.is_stop and token.pos_ in ['NOUN', 'PROPN']
         ])
 
-    def generate_fit_summary(self):
-        input_text = "summarize this person's skills: " + self.raw_text
-        inputs = tokenizer.encode(
-            input_text,
-            return_tensors="pt",
-            max_length=1024,
-            truncation=True
-        ).to(device)
-        
-        summary_ids = model.generate(
-            inputs,
-            max_length=500,
-            min_length=60,
-            length_penalty=2.0,
-            num_beams=4,
-            early_stopping=True
-        )
-        return tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+  
 
 class ResumeMatcher:
     def __init__(self, job_description):
@@ -182,15 +158,13 @@ if job_desc and len(resumes) == num_resumes:
 
 
     for i, (res, score) in enumerate(top_resumes, 1):
-        if res.summary is None:
-            res.summary = res.generate_fit_summary()
+     
 
         st.markdown(f"### {i}. {res.name}")
         st.write(f"**similarity score:** {round(score * 100, 2)}%")
         st.write(f"**email(s):** {', '.join(res.email)}")
         st.write(f"**phone(s):** {', '.join(res.phones)}")
         st.markdown("**AI summary of their fit**")
-        st.write(res.summary)
         st.markdown("---")
 
 elif job_desc and len(resumes) != num_resumes:
