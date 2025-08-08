@@ -16,7 +16,8 @@ nlp = spacy.load("en_core_web_sm")
 matcher = Matcher(nlp.vocab)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 tokenizer = BartTokenizer.from_pretrained('facebook/bart-large-cnn')
-model = BartForConditionalGeneration.from_pretrained('facebook/bart-large-cnn').to(device)
+model = BartForConditionalGeneration.from_pretrained('facebook/bart-large-cnn')
+model = model.to(device)
 
 class Resume:
     def __init__(self, text):
