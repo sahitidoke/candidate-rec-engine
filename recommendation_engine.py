@@ -11,7 +11,14 @@ from transformers import AutoTokenizer, BartForConditionalGeneration
 
 
 
-nlp = spacy.load("en_core_web_sm")
+import spacy.cli
+
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    spacy.cli.download("en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
+
 matcher = Matcher(nlp.vocab)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 tokenizer = AutoTokenizer.from_pretrained('facebook/bart-large-cnn')
