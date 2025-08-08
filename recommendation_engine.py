@@ -12,12 +12,13 @@ from transformers import AutoTokenizer, BartForConditionalGeneration
 
 nlp = spacy.load("en_core_web_sm")
 matcher = Matcher(nlp.vocab)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-tokenizer = AutoTokenizer.from_pretrained('facebook/bart-large-cnn')
-model = BartForConditionalGeneration.from_pretrained('facebook/bart-large-cnn')
-
-
-
+@st.cache_resource
+def load_model():
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    tokenizer = AutoTokenizer.from_pretrained('facebook/bart-large-cnn')
+    model = AutoModelForSeq2SeqLM.from_pretrained('facebook/bart-large-cnn').to(device)
+    return tokenizer, model, device
+load_model()
 class Resume:
     def __init__(self, text):
         self.raw_text = text
@@ -69,6 +70,7 @@ class Resume:
 
     def generate_fit_summary(self):
         input_text = "summarize this person's skills: " + self.raw_text
+        tokenizer, model, device = load_model()
         inputs = tokenizer.encode(
             input_text,
             return_tensors="pt",
