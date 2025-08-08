@@ -21,7 +21,9 @@ model = BartForConditionalGeneration.from_pretrained(
     low_cpu_mem_usage=True       # Helps avoid meta tensor state
 ).to(device)
 
-
+if device.type == "cuda":
+    model = model.to(device)
+    
 class Resume:
     def __init__(self, text):
         self.raw_text = text
