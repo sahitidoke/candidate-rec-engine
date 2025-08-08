@@ -77,8 +77,7 @@ class Resume:
             max_length=1024,
             truncation=True
         ).to(device)
-
-       summary_ids = model.generate(
+        summary_ids = model.generate(
             inputs,
             max_length=500,
             min_length=60,
@@ -86,7 +85,6 @@ class Resume:
             num_beams=4,
             early_stopping=True
         )
-
         return tokenizer.decode(summary_ids[0], skip_special_tokens=True)
 
 class ResumeMatcher:
