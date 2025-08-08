@@ -13,7 +13,7 @@ from transformers import pipeline
 
 nlp = spacy.load("en_core_web_sm")
 matcher = Matcher(nlp.vocab)
-summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+
     
 class Resume:
     def __init__(self, text):
@@ -64,6 +64,7 @@ class Resume:
             if token.is_alpha and not token.is_stop and token.pos_ in ['NOUN', 'PROPN']
         ])
     def generate_summary(self):
+        summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
         self.summary = summarizer(self.filtered_text, max_length=130, min_length=30)
         return self.summary
 
