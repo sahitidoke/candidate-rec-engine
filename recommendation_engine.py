@@ -7,9 +7,7 @@ import torch
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 from transformers import BartTokenizer, BartForConditionalGeneration
-torch.backends.cuda.enable_flash_sdp(False)
-torch.backends.cuda.enable_math_sdp(True)
-torch.backends.cuda.enable_mem_efficient_sdp(False)
+
 
 
 nlp = spacy.load("en_core_web_sm")
