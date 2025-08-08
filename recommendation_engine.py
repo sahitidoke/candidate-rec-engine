@@ -7,19 +7,16 @@ import torch
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
 from transformers import BartTokenizer, BartForConditionalGeneration
+torch.backends.cuda.enable_flash_sdp(False)
+torch.backends.cuda.enable_math_sdp(True)
+torch.backends.cuda.enable_mem_efficient_sdp(False)
 
-
-
-
-
-
-   
 
 nlp = spacy.load("en_core_web_sm")
 matcher = Matcher(nlp.vocab)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 tokenizer = BartTokenizer.from_pretrained('facebook/bart-large-cnn')
-model = BartForConditionalGeneration.from_pretrained('facebook/bart-large-cnn')
+model = BartForConditionalGeneration.from_pretrained('facebook/bart-large-cnn').to(device)
 
 class Resume:
     def __init__(self, text):
@@ -71,7 +68,6 @@ class Resume:
         ])
 
     def generate_fit_summary(self):
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         input_text = "summarize this person's skills: " + self.raw_text
         inputs = tokenizer.encode(
             input_text,
@@ -105,7 +101,7 @@ class ResumeMatcher:
         vectorizer = CountVectorizer().fit_transform(texts)
         vectors = vectorizer.toarray()
         return cosine_similarity([vectors[0]], [vectors[1]])[0][0]
-            
+    
     ''' here is my logic for cosine similarity!
     def cosine_sim(v1, v2):
         inter = set(v1.keys()) & set(v2.keys())
@@ -178,10 +174,8 @@ if job_desc and len(resumes) == num_resumes:
         matcher.add_resume(resume)
 
     st.subheader("here are your top candidates for the role!")
-    if (num_resumes<= 5):
-        top_resumes = matcher.get_top_resumes(num_resumes)
-    else:
-        top_resumes =  matcher.get_top_resumes(5)
+    top_resumes = matcher.get_top_resumes(min(num_resumes, 5))
+
 
     for i, (res, score) in enumerate(top_resumes, 1):
         if res.summary is None:
