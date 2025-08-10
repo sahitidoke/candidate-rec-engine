@@ -12,4 +12,4 @@ thoughts:
 - my favorite part was implementing the bart model since it was fairly new to me.
 - i believe the summaries could be better using LangChain framework.
 
-thank you for testing my project! looking forward to hearing from you. 
+thank you for testing my project! 
