@@ -1,5 +1,7 @@
 # sproutsai-candidate-rec-engine
 
+link to streamlit: https://sproutsai-candidate-rec-engine-nyfbks5dmn2dwxjacsghjg.streamlit.app/ 
+
 here are my thoughts and approaches on the problem:
   - i began by coding the file uploads and gathering data from each resume.
   - then, i used spaCy's NLP to help me extract the name from the resume. i also used regex for extracting emails and phone numbers.
