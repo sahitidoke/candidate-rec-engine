@@ -1,4 +1,3 @@
-# sproutsai-candidate-rec-engine
 
 link to streamlit: https://sproutsai-candidate-rec-engine-nyfbks5dmn2dwxjacsghjg.streamlit.app/ 
 
